@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { menuItems } from "@/lib/menu";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 export async function POST(req: Request) {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
   try {
     const { lastOrder } = await req.json();
 
