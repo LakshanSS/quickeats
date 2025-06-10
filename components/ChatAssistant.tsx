@@ -1,66 +1,108 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
-type Message = { from: 'user' | 'bot'; text: string };
+type Message = {
+  sender: "user" | "assistant";
+  text: string;
+};
 
 export default function ChatAssistant() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      sender: "assistant",
+      text: "Hello! Ask me for recommendations or help with your order 😊",
+    },
+  ]);
 
-  const sendMessage = async () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
-    const userMsg = { from: 'user' as const, text: input };
-    setMessages((msgs) => [...msgs, userMsg]);
-    setInput('');
-    setLoading(true);
-
+  
+    const userMessage: Message = { sender: "user", text: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+  
     try {
-      const res = await fetch('/api/food-assistant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg.text }),
+      const res = await fetch("/api/chat-assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
-      const { reply } = await res.json();
-      setMessages((msgs) => [...msgs, { from: 'bot', text: reply }]);
+  
+      const data = await res.json();
+      const assistantReply: Message = { sender: "assistant", text: data.reply };
+      setMessages((prev) => [...prev, assistantReply]);
     } catch (err) {
-      setMessages((msgs) => [...msgs, { from: 'bot', text: 'Oops, something went wrong.' }]);
-    } finally {
-      setLoading(false);
+      setMessages((prev) => [
+        ...prev,
+        { sender: "assistant", text: "Sorry, I couldn't respond right now." },
+      ]);
     }
   };
+  
 
   return (
-    <div className="max-w-md border rounded-lg p-4 bg-white shadow">
-      <h2 className="text-lg font-semibold mb-2">Food Assistant</h2>
-      <div className="h-64 overflow-y-auto mb-2 space-y-2">
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`p-2 rounded ${msg.from === 'user' ? 'bg-gray-100 self-end' : 'bg-blue-50 self-start'}`}
+    <>
+      {!isOpen && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="bg-black text-white px-4 py-2 rounded-full shadow-lg hover:bg-gray-800 transition"
           >
-            {msg.text}
+            💬 Ask QuickEats AI
+          </button>
+        </div>
+      )}
+
+      {isOpen && (
+        <div className="fixed bottom-6 right-6 w-[320px] h-[500px] bg-white border shadow-lg rounded-lg z-50 flex flex-col">
+          <div className="flex justify-between items-center p-3 border-b">
+            <h2 className="text-sm font-bold">QuickEats Assistant</h2>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="text-gray-500 hover:text-gray-800 text-xl"
+            >
+              ×
+            </button>
           </div>
-        ))}
-        {loading && <p className="text-sm text-gray-500">Bot is typing...</p>}
-      </div>
-      <div className="flex gap-2">
-        <input
-          className="flex-grow border rounded px-2 py-1"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-          placeholder="Ask me about the menu..."
-        />
-        <button
-          onClick={sendMessage}
-          disabled={loading}
-          className="bg-black text-white px-4 py-1 rounded disabled:opacity-50"
-        >
-          Send
-        </button>
-      </div>
-    </div>
+
+          {/* Messages */}
+          <div className="flex-1 p-3 overflow-y-auto text-sm space-y-2">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`p-2 rounded ${
+                  msg.sender === "user"
+                    ? "bg-gray-200 self-end text-right"
+                    : "bg-gray-100 text-left"
+                }`}
+              >
+                {msg.text}
+              </div>
+            ))}
+          </div>
+
+          {/* Input */}
+          <div className="p-3 border-t flex items-center gap-2">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask something..."
+              className="flex-1 px-3 py-2 text-sm border rounded"
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            />
+            <button
+              onClick={handleSend}
+              className="bg-black text-white text-sm px-4 py-2 rounded hover:bg-gray-800 transition"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -13,7 +13,8 @@ export async function POST(req: Request) {
 
     const { items } = JSON.parse(bodyText);
     const itemList = items.map((item: any) => item.name).join(", ");
-    const prompt = `Generate a short and friendly order confirmation message for these items: ${itemList}. Keep it under 30 words.`;
+    const prompt = `Write a warm, friendly order confirmation message in a casual tone. The user just ordered: ${itemList}. 
+Make it sound delightful, creative, and human-like. Mention the items in a fun way, and keep it under 40 words.`;
     const chatResponse = await openai.chat.completions.create({
       messages: [
         {
@@ -25,7 +26,7 @@ export async function POST(req: Request) {
           content: prompt,
         },
       ],
-      model: "gpt-4.1-nano",
+      model: "gpt-4.1",
     });
 
     const summary = chatResponse.choices[0].message.content;
