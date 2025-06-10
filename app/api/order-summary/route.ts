@@ -5,9 +5,9 @@ export async function POST(req: Request) {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
-  
+
   try {
-    const bodyText = await req.text(); // Read raw body
+    const bodyText = await req.text();
 
     const { items } = JSON.parse(bodyText);
     const itemList = items.map((item: any) => item.name).join(", ");
@@ -41,7 +41,6 @@ Make it sound delightful, creative, and human-like. Mention the items in a fun w
       );
     }
 
-    // Generic error response
     return NextResponse.json(
       { error: "Failed to generate order summary. Please try again later." },
       { status: 500 }

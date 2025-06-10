@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -8,7 +8,9 @@ export default function HomePage() {
           Welcome to <span className="text-orange-500">QuickEats</span> 🍔
         </h1>
         <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto">
-          Your go-to app for quick, delicious meals — now enhanced with AI-powered food recommendations, smart order summaries, and more.
+          Your go-to app for quick, delicious meals — now enhanced with
+          AI-powered food recommendation, chat assistant, smart order summary
+          and more.
         </p>
         <Link
           href="/menu"

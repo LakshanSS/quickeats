@@ -35,7 +35,7 @@ export default function SuccessPage() {
             .catch(() =>
               setSummary("Thanks for your order! Your food is being prepared.")
             );
-        }, 1000); // small delay
+        }, 1000);
       }
     }
   }, []);

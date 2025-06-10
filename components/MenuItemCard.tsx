@@ -10,7 +10,7 @@ export default function MenuItemCard({ item }: { item: MenuItem }) {
 
   const handleAddToCart = () => {
     addToCart(item);
-    router.push('/cart'); // Navigate to cart after adding
+    router.push('/cart');
   };
 
   return (
