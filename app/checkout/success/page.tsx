@@ -13,11 +13,32 @@ type Order = {
 
 export default function SuccessPage() {
   const [order, setOrder] = useState<Order | null>(null);
+  const [summary, setSummary] = useState("Loading your order summary...");
 
   useEffect(() => {
     const stored = localStorage.getItem("lastOrder");
     if (stored) {
-      setOrder(JSON.parse(stored));
+      const parsed: Order = JSON.parse(stored);
+      setOrder(parsed);
+  
+      if (parsed.cart.length > 0) {
+        setTimeout(() => {
+          fetch("/api/order-summary", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ items: parsed.cart }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data?.summary) setSummary(data.summary);
+            })
+            .catch(() =>
+              setSummary(
+                "Thanks for your order! Your food is being prepared."
+              )
+            );
+        }, 1000); // small delay
+      }
     }
   }, []);
 
@@ -26,11 +47,8 @@ export default function SuccessPage() {
       <h1 className="text-3xl font-bold text-green-600 mb-4">
         ✅ Order Placed!
       </h1>
-      <p className="text-gray-700 mb-6 max-w-md">
-        Thank you for ordering with{" "}
-        <span className="font-semibold">QuickEats</span>. Your food is on its
-        way!
-      </p>
+
+      <p className="text-gray-700 mb-6 max-w-md">{summary}</p>
 
       {order && (
         <div className="mb-6 w-full max-w-md text-left border p-4 rounded bg-white shadow">
