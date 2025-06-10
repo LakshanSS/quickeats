@@ -16,12 +16,14 @@ export default function CheckoutPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Simulate sending order
-    console.log("Order placed:", {
+    const order = {
       name,
       address,
       cart,
-    });
+      total,
+    };
+
+    localStorage.setItem("lastOrder", JSON.stringify(order));
 
     clearCart();
     router.push("/checkout/success");
