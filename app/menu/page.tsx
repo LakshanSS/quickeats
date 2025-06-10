@@ -52,10 +52,10 @@ export default function MenuPage() {
 
           {recommendation && (
             <div className="mb-8 px-6 py-4 bg-blue-50 border border-blue-200 rounded-lg shadow-sm text-gray-800">
-              <span className="font-semibold text-base text-blue-800">
-                Recommended:
-              </span>{" "}
-              <span className="text-base">{recommendation}</span>
+              <div className="font-semibold text-base text-blue-800 mb-2">
+                Recommended for you:
+              </div>
+              <div className="text-base">{recommendation}</div>
             </div>
           )}
 
