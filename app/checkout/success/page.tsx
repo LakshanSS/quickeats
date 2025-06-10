@@ -20,7 +20,7 @@ export default function SuccessPage() {
     if (stored) {
       const parsed: Order = JSON.parse(stored);
       setOrder(parsed);
-  
+
       if (parsed.cart.length > 0) {
         setTimeout(() => {
           fetch("/api/order-summary", {
@@ -33,9 +33,7 @@ export default function SuccessPage() {
               if (data?.summary) setSummary(data.summary);
             })
             .catch(() =>
-              setSummary(
-                "Thanks for your order! Your food is being prepared."
-              )
+              setSummary("Thanks for your order! Your food is being prepared.")
             );
         }, 1000); // small delay
       }
@@ -67,18 +65,12 @@ export default function SuccessPage() {
         </div>
       )}
 
-      <div className="flex gap-4">
+      <div className="mt-6">
         <Link
           href="/menu"
-          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition"
+          className="inline-block bg-black text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-gray-800 transition"
         >
-          Order More
-        </Link>
-        <Link
-          href="/"
-          className="border border-gray-400 px-6 py-2 rounded hover:bg-gray-100 transition"
-        >
-          Back to Home
+          Browse More Items
         </Link>
       </div>
     </main>
