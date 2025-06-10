@@ -3,6 +3,11 @@ import OpenAI from "openai";
 import { menuItems } from "@/lib/menu";
 
 export async function POST(req: Request) {
+  if (!process.env.OPENAI_API_KEY) {
+    console.error("Error: OPENAI_API_KEY is not set!");
+  } else {
+    console.log("OPENAI_API_KEY found! Key starts with:", process.env.OPENAI_API_KEY.substring(0, 5) + '...')
+  }
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   try {
